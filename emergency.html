@@ -131,7 +131,7 @@
             activeQuestions: [],
             currentIndex: 0,
             answers: {}, 
-            wrongAnswers: new Set()
+            wrongAnswers: new Set() // This will now accumulate incorrectly answered questions
         };
 
         const appContainer = document.getElementById('app');
@@ -151,8 +151,8 @@
             setState({
                 activeQuestions: filtered,
                 currentIndex: 0,
-                answers: {},
-                wrongAnswers: new Set(),
+                answers: {}, // Clear answers for the new active session
+                // Note: We DO NOT clear wrongAnswers here anymore, so they accumulate!
                 mode: 'quiz'
             });
         };
@@ -174,9 +174,12 @@
             const newAnswers = { ...state.answers, [qId]: optIdx };
             const newWrongAnswers = new Set(state.wrongAnswers);
 
+            // LOGIC FIX: 
+            // If they answer incorrectly, add it to wrongAnswers.
+            // If they answer correctly (anytime, anywhere), remove it from wrongAnswers.
             if (optIdx !== correctIdx) {
                 newWrongAnswers.add(qId);
-            } else if (state.mode === 'review') {
+            } else {
                 newWrongAnswers.delete(qId);
             }
 
