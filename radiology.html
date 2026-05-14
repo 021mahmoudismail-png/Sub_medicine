@@ -288,6 +288,7 @@ function renderHome() {
         `;
     });
 
+    // Count how many questions currently have a wrong answer stored
     const wrongAnswersCount = Object.keys(userAnswers).filter(id => {
         const q = questions.find(q => q.id == id);
         return q && userAnswers[id] !== q.answer;
@@ -325,30 +326,44 @@ function renderHome() {
 
 function startQuiz(topic) {
     if (topic === 'all') {
-        // Shuffle all questions
         currentQuestions = [...questions].sort(() => Math.random() - 0.5);
     } else {
         currentQuestions = questions.filter(q => q.topic === topic);
     }
+    
+    // Clear previous answers for the selected questions so the user can resolve them fresh
+    currentQuestions.forEach(q => {
+        delete userAnswers[q.id];
+    });
+    
     currentQuestionIndex = 0;
     renderQuestion();
 }
 
 function startReview() {
+    // Filter questions the user previously answered incorrectly
     currentQuestions = questions.filter(q => {
         return userAnswers[q.id] !== undefined && userAnswers[q.id] !== q.answer;
     });
+    
     if(currentQuestions.length === 0) {
         alert("No mistakes to review!");
         return;
     }
+    
+    // CRITICAL: Delete the stored answers for these questions!
+    // This allows the user to truly "resolve" them from scratch rather than just staring at the locked-in wrong answer.
+    currentQuestions.forEach(q => {
+        delete userAnswers[q.id];
+    });
+    
     currentQuestionIndex = 0;
     renderQuestion();
 }
 
 function selectOption(optionIndex) {
     const q = currentQuestions[currentQuestionIndex];
-    if (userAnswers[q.id] !== undefined) return; // Prevent re-answering
+    if (userAnswers[q.id] !== undefined) return; // Prevent re-answering once they've clicked
     
     userAnswers[q.id] = optionIndex;
     renderQuestion();
