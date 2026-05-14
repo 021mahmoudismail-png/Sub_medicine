@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Medicine Question Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-12">
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white p-2 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                </div>
+                <h1 class="font-bold text-xl text-slate-800 tracking-tight">FamMed Q-Bank</h1>
+            </div>
+            <button onclick="goHome()" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Home
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main id="app" class="max-w-4xl mx-auto px-4 mt-8"></main>
+
+    <script>
+        // Data Structure: [Question, [Options], CorrectIndex, Explanation]
+        const quizData = {
+            "Introduction to Family Medicine": [
+                ["Wrong about family medicine:", ["More personal", "Uses sophisticated tools", "More consultation time", "Wide knowledge about medicine", "More comprehensive"], 1, "Family medicine relies heavily on clinical skills and history, not sophisticated diagnostic tools."],
+                ["Patient primarily finishes his complaint in:", ["23 seconds", "45 seconds", "2 minutes", "3 minutes", "4 minutes"], 0, "Studies (like Beckman & Frankel) show patients typically finish their initial complaint in 18-23 seconds if uninterrupted."],
+                ["A female whose husband has been trying to convince her to see her doctor at the clinic might refuse due to all of the followings except:", ["She is busy", "Financial reasons", "The clinic is far away", "The receptionist in the office is rude", "She only gets reassurance and advice with no medications"], 4, "Reassurance and advice are highly valued outcomes in family medicine; they rarely deter a visit."],
+                ["Cause of seeking medical help:", ["Sore throat interfering with social life", "Gradual onset of symptoms", "Invisible signs", "Single lonely male", "Doctor is insensitive and does not listen"], 0, "Symptoms that interfere with daily or social functioning are primary triggers for seeking medical care."],
+                ["Wrong statement:", ["Acute major cases about 15%", "M.I and ruptured aneurysm are life threatening", "Minor self-limiting 40%", "Chronic problems 25%"], 2, "According to textbook epidemiology, minor self-limiting cases account for a much higher percentage (often >60-70%) in primary care."],
+                ["Aims of family medicine...wrong:", ["Turn community-based medicine into hospital-based medicine"], 0, "Family medicine aims to keep care in the community, preventing unnecessary hospitalizations."],
+                ["Not a function of primary care according to AAFP:", ["Direct to the point care"], 0, "Primary care focuses on comprehensive, continuous, and holistic care, not just 'direct to the point' episodic care."],
+                ["False about family medicine:", ["Uncertainty and problem solving in narrow time frame is not an essential in family medicine"], 0, "Managing uncertainty safely within a short time frame is actually a core, essential skill in family medicine."],
+                ["Who will seek doctor consultation more?", ["Child with chronic cough that annoy him in classroom"], 0, "Symptoms causing functional or social disruption (like annoyance in class) strongly prompt seeking care."]
+            ],
+            "Consultation": [
+                ["According to Stott and Davis, the consultation includes all of the following tasks EXCEPT:", ["To identify the presenting problem", "To promote health", "To manage continuing problems", "To identify the hidden patient's agenda", "To modify help-seeking behavior"], 3, "Identifying the hidden agenda is part of Pendleton's tasks, while the other four are Stott and Davis's model."],
+                ["While interviewing/history taking the following must be considered by the physician except:", ["Uses the instruments commonly used in family practice in a competent and sensitive manner", "Uses silence appropriately", "Recognizes patients' verbal and non-verbal cues", "Exhibits well-organized approach to information gathering", "Seeks clarification of words used by patients as appropriate"], 0, "Using instruments is part of the physical examination, not the interviewing/history taking phase."],
+                ["Regarding questioning during the consultation, one of the following statements is false:", ["Summarizing the patient's message in your own words is called: facilitation", "Closed-ended questions control the communication and limit verbal communication", "When did you first start to experience these symptoms? is a recall question", "You said you were feeling miserable, could you tell me more? is a leading question", "Starting with open questions and ending with closed questions is an example of funneling"], 0, "Summarizing in your own words is called 'reflection' or 'paraphrasing', not facilitation (which is encouraging them to continue)."],
+                ["Doctor doesn't use which type of questions?", ["Open-ended", "Open to closed", "Checking", "Problem survey"], 3, "Doctors generally don't use 'problem survey' questioning; they use open-to-closed cones and checking."],
+                ["Which of the following is false?", ["Use open-ended questions to let the patient feel free and tell all he wants", "At the beginning of consultation don't allow the patient to tell his list of interests, start by asking about symptoms instead"], 1, "You should allow the patient to state their full agenda initially before diving into specific symptoms."],
+                ["Mother that was too exhausted, question indicates open information gathering:", ["How's your sleep?"], 0, "Asking 'How is your sleep?' is open-ended and allows the patient to elaborate."],
+                ["Open-ended question:", ["How can I help u?"], 0, "This is the classic, most broad open-ended question to start a consultation."],
+                ["All cause failure interview except:", ["Systemic approach"], 0, "A systematic approach organizes the interview and prevents failure."],
+                ["True about communication:", ["Pacing is a way to establish rapport"], 0, "Pacing (matching the patient's tone, speed, and language) builds subconscious rapport."],
+                ["Wrong about establishing rapport:", ["Talking about a book they have"], 0, "Finding common ground (like a book) actually HELPS establish rapport; it is not wrong."],
+                ["True in interview:", ["You should watch not only patient gestures, but yourself and reactions"], 0, "Self-awareness and monitoring your own non-verbal cues are critical in effective communication."],
+                ["Not essential in interview:", ["Therapeutic procedures"], 0, "Therapeutic procedures are actions/treatments, not an essential part of the verbal interview itself."],
+                ["Wrong question combination:", ["Leading question - do you complain of something besides your pain?"], 0, "That is an open/clarifying question, not a leading question. A leading question suggests the answer (e.g., 'Your pain is better, isn't it?')."],
+                ["A case of an old patient who has a lot of diseases who recently relocated to the area... Which of the following is wrong?", ["No labs are required for now & review previous records"], 0, "A new, complex elderly patient usually requires baseline labs to establish their current status, not just reviewing old records."]
+            ],
+            "Approach to Geriatric Patients": [
+                ["Who to give herps zoster vaccine?", ["HIV", "Sickle cell anemia", "Post GI surgery", "Patient had VZV as a child", "Patient had shingles + above 60"], 4, "The Shingrix vaccine is indicated for adults 50+ to prevent shingles, even if they've had it before."],
+                ["We give pneumovax in a healthy nonsmoker 50-year-old male:", ["Yearly", "Each 5 year", "Once", "Each 20 years", "To immunocompromised patient"], 4, "Healthy 50-year-olds don't get pneumovax routinely; it's indicated for the elderly (65+) or younger immunocompromised patients."],
+                ["A 65-year-old female came to the clinic with her son. She looks to her son to continue the rest of the answers... What to do?", ["Ask the son to allow her answer alone", "Maintain direct eye contact with the patient", "Tell the son to leave and assess her for elderly abuse", "Screen her for depression", "Continue as normal"], 1, "Maintaining eye contact empowers the patient and encourages her autonomy without causing confrontation."],
+                ["Geriatric patient assessment should involve all the following except:", ["Questionnaire expedites", "Full systemic assessment of mental, social, physical health", "Drug review"], 0, "Relying purely on expediting questionnaires is wrong; geriatrics require comprehensive, individualized assessment."],
+                ["Polypharmacy number of drugs:", ["3", "5", "7", "10"], 1, "Polypharmacy is universally defined as the concurrent use of 5 or more medications."],
+                ["All of the following need flu vaccine except:", ["Food controlled diabetic", "Chronic disease patient", "Immunocompromised", "Ill patient and his cancer"], 3, "While immunocompromised/cancer patients need it, a severely 'ill' patient with an acute active illness should delay vaccination until recovered (based on options)."],
+                ["What is a normal physiological finding in the elderly that doesn't need further evaluation?", ["S4 heart sound", "S3 heart sound", "Ejection click", "Midsystolic murmur heard best at the right 2nd parasternal space"], 0, "An S4 sound is often normal in the elderly due to age-related decreased ventricular compliance."],
+                ["Which of the following is a normal finding in an 80-year-old patient?", ["Stress heart rate of 90 BPM", "Blood pressure of 150/80", "Decreased CR clearance"], 2, "Renal function (creatinine clearance) naturally declines with normal aging."],
+                ["Patient is 70 years old, he took pneumococcal vaccine for the first time before 7 years. He came to ask if he should take another shot. What is true?", ["Don't give any more shots", "Give another shot and never give shots again"], 1, "If the first dose was before age 65, one final booster is given after age 65 (and 5 years after the first dose)."],
+                ["A 74-year-old female, recently having problems with language, she forgot how to reach home after shopping. Which of the following is the best indicator of dementia in this patient?", ["Impaired daily function", "Loss of memory, especially short-term memory", "Old age, especially more than 80 years"], 0, "The defining clinical difference between mild cognitive impairment and dementia is the impairment of independent daily functioning (ADLs/IADLs)."],
+                ["About 87 years old male and driving, had episodes of confusion, not to do:", ["CBC", "Referral to neurologist for dementia"], 1, "You must first rule out reversible causes of confusion (infection, anemia, electrolytes) with labs like CBC before diagnosing/referring for dementia."],
+                ["Wrong about theories of aging:", ["Dysfunction of the immune system is not related to life expectancy"], 0, "Immune system dysfunction (immunosenescence) is a major theory of aging and directly affects life expectancy."],
+                ["A finding that needs further investigation in a geriatric patient:", ["S3 on heart auscultation"], 0, "An S3 in an older adult is abnormal and strongly suggests heart failure/volume overload."],
+                ["True about people with multiple diseases:", ["Multimorbidity is increased risk factor to polypharmacy"], 0, "Having multiple chronic diseases directly leads to being prescribed multiple medications (polypharmacy)."],
+                ["70-year-old with decreased interest, husband died three years ago, lives alone, management:", ["Do Geriatric Depression Scale Assessment or PHQ 9"], 0, "Decreased interest (anhedonia) in an elderly isolated widow is a red flag for depression, requiring screening."],
+                ["Wrong about functional assessment in geriatrics:", ["Executive function and judgement are needed to perform ADL"], 0, "Executive function is primarily needed for Instrumental ADLs (IADLs like finances/shopping), not basic ADLs (like feeding/bathing)."],
+                ["An 80-year-old with insomnia, wrong:", ["Severe heart failure and stroke are common geriatrics syndrome"], 0, "HF and stroke are traditional medical *diseases*, not 'geriatric syndromes' (which are falls, delirium, incontinence, frailty)."],
+                ["Dementia:", ["Impaired memory"], 0, "Memory impairment is a core, defining feature of dementia."],
+                ["Not a physiological change in geriatrics:", ["Homeostenosis is equivalent to hemostasis in adults"], 0, "Homeostenosis is the narrowing of physiologic reserves with age, totally unrelated to hemostasis (blood clotting)."],
+                ["Pneumococcal vaccines:", ["13 stronger antibody reaction and 23 cover more pathogens"], 0, "PCV13 is conjugated (stronger memory response), while PPSV23 is polysaccharide (covers more strains but weaker memory)."],
+                ["Which of the following is wrong about geriatrics?", ["A patient-filled questionnaire will help expedite the process"], 0, "Elderly patients often struggle with long questionnaires due to vision/cognitive/fatigue issues; it doesn't always expedite."],
+                ["Wrong:", ["Bacteriuria is treated even if asymptomatic in elderly to prevent delirium"], 0, "Asymptomatic bacteriuria is NEVER treated in the elderly (unless undergoing urologic procedures), as it breeds resistance without benefit."]
+            ],
+            "Communication Skills & in Children": [
+                ["True about good communication:", ["Increase need of investigation", "Decrease time of consult", "Decrease litigation", "Consult time remains constant", "Decrease need for investigation"], 2, "Effective communication builds trust and mutual understanding, drastically reducing the risk of malpractice litigation."],
+                ["False about active listening:", ["Negotiating priorities", "Asking open questions", "Summarizing", "Asking to repeat appropriately", "Attending to verbal and non-verbal cues"], 0, "Negotiating priorities is a management/planning skill, not an 'active listening' technique."],
+                ["In communicating with adolescents, all of the following points are essential EXCEPT:", ["Treat the young person as responsible", "Confidentiality is a major issue when seeing adolescents, and should not be infracted", "Use metaphor and humor", "HEEADSSS acronym is a guide", "Take a curious stance"], 1, "Confidentiality IS essential, but saying it should 'not be infracted' is false: it MUST be broken if there is risk of severe harm (suicide, abuse)."],
+                ["The patient wants all of those from his physician except:", ["Being judgmental", "Highly skilled", "Rule out serious diseases"], 0, "Patients desire empathy and non-judgmental attitudes from their physicians."],
+                ["In communicating with elderly patients, one is less accurate:", ["You should talk loudly and at slow speed to elderly patients with presbycusis", "One of the best ways to generate a good relationship is home visits", "Keep in mind elder abuse", "Raising of the pain threshold affects presentation", "Use a different priority list"], 0, "Talking loudly (shouting) distorts high-frequency sounds more; you should speak clearly, slowly, and in a lower pitch, not just 'loudly'."],
+                ["One of the following is NOT part of the chaperone roles:", ["Offer emotional support", "Protect the patient's dignity", "Reassure the patient", "Facilitate communication, especially if there is a language barrier", "Record everything happens during the examination"], 4, "A chaperone is a witness and support person, not a medical scribe tasked with recording the exam details."],
+                ["Patient with cancer, he asked you not to tell his wife, what should you do?", ["Don't tell her and try to convince him to do so", "Tell her that it is benign", "Tell her anyway", "Meet them at your office and tell her"], 0, "Patient autonomy and confidentiality dictate you must respect his wishes, but explore his reasons and encourage him to share."],
+                ["Tasks could be made at every consultation except:", ["Management of continuing problem", "Presenting problem", "Help seeing behavior modifications", "Lab results interpretation"], 3, "Lab results are only interpreted if tests were previously ordered; it's not a required task for *every* consultation."],
+                ["Elderly patient with elevated HbA1c said 'no doctor ever listens to me', how to initiate?", ["This must be frustrating, tell me what are your concerns", "Sad to hear, let's talk about what you can do to lower your A1c", "That can be disappointing, but if you don't take your medications you will get worse"], 0, "Acknowledging the emotion (frustration) and exploring it builds rapport before addressing the medical issue."],
+                ["Shy 17-year-old boy, hesitates while talking, how to make sure you get a full history?", ["Use active listening and ask reflective questions to keep it going", "Move on with consultations", "Involve the parents immediately"], 0, "Active listening and reflection encourage hesitant adolescents to open up without feeling pressured."],
+                ["Which of the following is most likely to be misunderstood by the patient?", ["Now we have to think of withdrawal of care", "We'd like to offer you all help to control your symptoms", "If you became terminally ill would you like to be put on artificial ventilator"], 0, "Medical jargon like 'withdrawal of care' is often misunderstood by patients as 'abandonment' or stopping all help."],
+                ["Not true about adolescence:", ["Extra care, as long as possible communication", "No approach"], 1, "There are structured approaches to adolescents (like HEEADSSS); 'no approach' is false."],
+                ["You were treating headache for 2 years, now he is concerned about brain cancer and asked for neurologist:", ["Tell him you have done all assessments and he doesn't need referral", "Emphasize on the patient's signs, symptoms, and physical exam then try to convince him there is no need for referral"], 1, "Validating their concern by reviewing normal objective findings is the best way to reassure before denying a referral."],
+                ["Patient and husband excited about pregnancy but lady is staring at hands and sighing loudly:", ["Happy to get pregnant but afraid from labor", "Her verbal and nonverbal behavior is not congruent"], 1, "Saying she is 'excited' while sighing and looking down is a classic mismatch of verbal and non-verbal communication."],
+                ["Communication wrong?", ["To be in untidy dressing .."], 0, "Professional appearance (tidy dress) is a foundational non-verbal communication tool that establishes trust."],
+                ["Strong evidence for physical activity?", ["Adult and adolescent"], 0, "Physical activity has universally strong evidence for health benefits across all age groups, notably adults and adolescents."],
+                ["What situation needs a chaperone with a female doctor?", ["A chaperone is needed whether the person examining is male or female"], 0, "Chaperones protect both the patient from misconduct and the physician from false allegations, regardless of gender."],
+                ["About using toys in clinic, wrong?", ["Can accurately diagnose autism"], 0, "Toys are used for engagement and basic developmental observation, but cannot 'accurately diagnose' autism on their own."],
+                ["Which of the following is a form of nonverbal communication?", ["Tone"], 0, "Vocal tone, pitch, and pacing are considered paralanguage, which falls under nonverbal communication."],
+                ["Wrong about doing a pap smear to a patient?", ["Tell her that she can stop you when she feels pain only"], 0, "Patients have the right to halt an exam at ANY time for ANY reason (discomfort, anxiety), not 'only' for pain."],
+                ["Child decrease appetite, father died?", ["Psychologist"], 0, "Grief manifesting as physical symptoms in a child requires professional psychological support and counseling."],
+                ["How to deal with a child as a doctor?", ["Play with him and talk to him in a language he understands"], 0, "Meeting a child at their developmental level through play reduces anxiety and builds cooperation."],
+                ["Not considered as non-verbal communication?", ["Reflection on the patient's question"], 0, "Reflection is a verbal technique of rephrasing or repeating back what the patient said."],
+                ["About using toys in clinic, wrong?", ["Need to have toys of above and below 3 years"], 0, "You should have toys for various ages, limiting it to just strictly above/below 3 years is too restrictive/wrong in context."]
+            ],
+            "Breaking Bad News": [
+                ["Before letting your patient leave after breaking bad news one of the following is mandatory?", ["You should not provide contact information", "You should make your best to explain the next step to the patient", "Try to arrange for follow-up whenever the patient needs", "You should not emphasize if the patient understands", "You should explain all the details related to the diagnosis"], 1, "Providing a clear 'Strategy and Summary' (the S in SPIKES) and next steps prevents the patient from feeling abandoned."],
+                ["You receive results of a breast mass biopsy which show adenocarcinoma. What is the next step in informing her?", ["Explain that she needs imaging", "Ask her what she knows and understands up to this point", "No need to tell her", "Tell her the diagnosis straightforward", "Ask her what she wants to know about the surgery"], 1, "Before giving news, you must assess the patient's Perception (the P in SPIKES) by asking what they already know."],
+                ["During a breaking bad news session your patient becomes angry. The best way to deal with him is?", ["Call the security", "Stop the consultation", "Talk in a loud voice", "Keep calm and do not treat anger with anger", "Ignore him and leave the room"], 3, "Anger is a normal grief response. Remaining calm, empathetic, and non-defensive is the correct approach."],
+                ["The one who loss his mother and come complain and talk in details.. questions?", ["Interrupt, refocus", "Ask how it affected him.."], 1, "Exploring the emotional impact of the loss allows the patient to process grief and shows empathy."],
+                ["Pt crying to you because she was divorced the best to do?", ["Silence", "Sadly, that it's common", "I can feel exactly like you", "Tell her that she can be sad as this occurred", "All are true"], 3, "Validating their emotions ('it's okay to be sad') is the core of an empathetic response."],
+                ["A mother had abortion, best way to show empathy?", ["Silence", "I understand how you feel like", "Sorry, this actually happens...", "It must be a horrible thing to go through", "All of the above"], 3, "Acknowledging the severity of their emotional pain without claiming to 'know exactly how they feel' shows true empathy."],
+                ["A male patient referred to you due to inability to conceive, test came to be azoospermia... what do you do?", ["Call the patient and tell him that you need to talk to him about the result, and he may bring anybody with him", "Tell him at the phone to grieve at home", "Tell him to bring his wife as she should know", "Tell him to come alone"], 0, "Setting up the interview (S in SPIKES) involves arranging an in-person meeting and inviting them to bring a support person."],
+                ["True in breaking bad news?", ["ABCDE is the standard", "SPIKES protocol has shown to be superior", "95% pts wish frank precise diagnosis"], 2, "Studies show the vast majority of patients want the truth about their diagnosis, even if it is bad news."],
+                ["Old lady with back pain turned out to be metastases. Best way to approach?", ["What do you know about your back pain?", "Whether she wants to know results", "Unfortunately, you have metastasis"], 0, "Always start by assessing the patient's current perception and knowledge of their condition."],
+                ["Patient turned out to have adenocarcinoma of colon, what to do next?", ["Ask patient what she wants to know", "Ask patient what she knows so far and understands"], 1, "Assessing Perception (what they know) must happen before assessing Invitation (what they want to know)."],
+                ["Patient with cancer and her family don't want to tell her, what is the management plan?", ["According to patient knowledge", "Doctor with the patient in the best way"], 0, "You must assess what the patient themselves wants to know, overriding the family's desire for secrecy if the patient wants the truth."],
+                ["Deliver bad news to favorite patient?", ["Assess patient feeling .... (SPIKES)"], 0, "Even with favored or familiar patients, stick to the structured SPIKES protocol to ensure proper delivery."],
+                ["Wrong about the preparation for breaking bad news?", ["Choose the appointment during your busy working hours"], 0, "Bad news requires time, privacy, and no interruptions. Scheduling during peak busy hours is inappropriate."],
+                ["Not a coping mechanism in breaking bad news?", ["Disengagement"], 0, "Disengagement (abandoning the relationship) is an inappropriate response; coping mechanisms include denial, anger, or acceptance."],
+                ["About breaking bad news?", ["Be aware that the patient may not understand essential ideas, use diagrams and repetition"], 0, "Shock impairs cognition. Keeping information simple, repeating it, and using visuals helps comprehension."],
+                ["Wrong about summarizing in breaking bad news?", ["Ask them to read about their disease on the internet"], 0, "Sending them to the uncurated internet causes anxiety; provide specific, reliable resources instead."],
+                ["Wrong in ABCDE approach to breaking bad news?", ["B stands for Being the patient's support"], 0, "In ABCDE, B stands for 'Build a therapeutic environment/relationship', not simply 'being support'."],
+                ["Patient in bad situation coming to the hospital needing surgery, what will the patient ask?", ["What's wrong with me"], 0, "In acute, severe situations, the primary concern of the patient is obtaining a diagnosis and understanding the danger."]
+            ],
+            "Difficult Patients": [
+                ["One of the following is NOT part of management of difficult patient:", ["Structure a program for them", "Demonstrate genuine interest in person's life, less for complaints", "Accept symptoms as expressions of neurosis", "Stop seeing them and advise them no to come to the clinic", "Give up trying to cure them"], 3, "Abandoning the patient is unethical. Setting boundaries and structured regular visits is the correct management."],
+                ["For patients who present with multiple complains, ONE STATEMENT IS WRONG:", ["Are not annoying", "Mostly they are hypochondriacs", "Are not demanding", "They should not be labeled as attention-seeking", "Are mostly depressed"], 1, "Labeling all patients with multiple complaints as 'hypochondriacs' is stigmatizing and clinically inaccurate (many have depression/somatization)."],
+                ["Definition of Entitled Demander:", ["Require constant reassurance", "Attempt to control the doctor through intimidation and by inducing guilt or fear", "A self-destructive path", "Want to damage themselves"], 1, "Entitled demanders use hostility, intimidation, and guilt-tripping to control the physician and get what they want."],
+                ["What is true about somatizing patient?", ["Hallucinations and delusions", "Drug seeking", "Multiple vague unrelated symptoms"], 2, "Somatization is defined by the physical expression of psychological distress, presenting as multiple vague, shifting symptoms."],
+                ["Patient calling in the middle of the night for minor complaints, demands urgent appointments. How to deal?", ["Set boundaries and schedule regular follow ups", "Confront patient", "Explain symptoms and give tx"], 0, "Setting firm, professional boundaries and establishing a predictable follow-up schedule manages demanding behavior effectively."],
+                ["Wrong in difficult patient management:", ["You should ask adolescent about their activities", "HEADSSS acronym is used for elderly", "Take a curious, non-intrusive, & respectful stance"], 1, "HEADSSS is an assessment tool specifically designed for Adolescents, not the elderly."],
+                ["True about dealing with a patient angry of your colleague:", ["Ask about what's causing them this concern"], 0, "Exploring the root of their anger validates their feelings without necessarily agreeing or throwing the colleague under the bus."],
+                ["In case patient is seductive:", ["Call the nurse"], 0, "Immediate presence of a chaperone (nurse) protects the physician and establishes clear professional boundaries."]
+            ],
+            "Anticipatory Care & Preventive Services": [
+                ["Regarding screening interval for high blood pressure, one is true:", ["Every 2 years for patient aged 18+", "No need to repeat if less than 120/80", "Annually for patients aged 40 and more", "Every 7 years", "Every other year"], 2, "USPSTF recommends annual BP screening for adults aged 40 and older, and for those at increased risk."],
+                ["Regarding screening interval for high blood pressure, one is true:", ["Every 3 years for patient aged 18+", "No need to repeat if < 110/70", "Yearly for a 40-year-old man", "Every 5 years", "Every other year"], 2, "Again, adults 40 and older should be screened annually for hypertension."],
+                ["Which of the following screening tests is NOT indicated?", ["Mammography for 75-year-old women", "Pap smear for any woman 40-year-old and older", "Blood pressure measurement for 30-year-old man", "Screen a young woman for postpartum depression", "CT scan for 55-year-old male with a 40-year pack smoking history"], 1, "Pap smears are NOT for 'any' woman 40+; they are stopped at age 65 if previous results were normal, or if they had a total hysterectomy for benign reasons."],
+                ["Not part of anticipatory care for a 45-year-old smoker:", ["Talking about stopping smoking", "Do routine chest X-ray yearly for lung cancer", "Pap smear", "Measure blood pressure", "Mammogram"], 1, "Lung cancer screening is done with Low-Dose CT (LDCT), NEVER with a routine chest X-ray."],
+                ["According to the current 2022 USPSTF Guidelines, we give aspirin to prevent ischemic strokes to:", ["Male 45-75 yo", "Male 55-80 yo", "Female 45-75 yo", "Female 55-75", "None regardless of sex and age"], 4, "The 2022 USPSTF guidelines recommend AGAINST routinely starting aspirin for primary prevention in adults."],
+                ["Which must be in a screening tool?", ["High sensitivity", "High specificity", "High positive predictive value", "High negative predictive value", "All of the above"], 0, "Screening tools must be highly SENSITIVE to ensure they don't miss anyone with the disease (few false negatives)."],
+                ["72-year-old woman with well-controlled diabetes and cognitive impairment. All taken into account EXCEPT:", ["Colonoscopy shouldn't be done if life expectancy < 5 yrs", "If she has a Katz score of 3/6 she will likely benefit from colonoscopy", "If cognitive impairment advanced she shouldn't undergo", "Benefit to risk ratio should be considered", "Colonoscopy only indicated if fit and independent"], 1, "A Katz index of 3/6 indicates significant functional impairment; invasive screening like colonoscopy is generally not beneficial in frail, impaired elderly."],
+                ["PHQ-9 is?", ["A screening tool for depression", "Used in treatment", "Score above 20 is severe", "Max score 27", "All of the above"], 4, "The PHQ-9 is a 9-item scale used to screen, diagnose, and monitor depression, with a max score of 27."],
+                ["45-year-old lady who's a smoker & had previous appendectomy. Do all screening except:", ["Mammogram", "DEXA scan", "Blood pressure", "Pap smear", "Colonoscopy"], 1, "DEXA scans (for osteoporosis) routinely start at age 65, not 45 (unless specific high risks are present)."],
+                ["Most likely to benefit from colonoscopy:", ["78 yo with alzheimer", "77 yo healthy no previous colonoscopy", "80 yo who had colonoscopy 10 years ago", "75 yo female with HF", "51 yo female with metastatic breast CA"], 1, "A healthy 77-year-old who has NEVER been screened gets the most life-year benefit compared to those with terminal illness or advanced age/dementia."],
+                ["70 year old female... normal pap/mammogram 3 yrs ago, normal colonoscopy 7 yrs ago. Most appropriate next step?", ["lipid profile", "pap smear", "colonoscopy", "Mammography", "Chest X ray"], 3, "Mammography is indicated every 2 years up to age 74. She had one 3 years ago, so she is due now."],
+                ["Primary prevention:", ["Decrease prevalence", "Decrease incidence", "Increase prevalence", "Increase incidence"], 1, "Primary prevention stops a disease before it occurs, thereby reducing the incidence (number of new cases)."],
+                ["Patient 35, sister 47 diagnosed with breast cancer. Appropriate next step:", ["Observe", "Self breast test", "Mammogram", "Ultrasound", "Genetic counseling"], 2, "Screening typically starts 10 years prior to the age of diagnosis of a first-degree relative (47-10 = 37), but early mammogram is the clinical next step for risk assessment."],
+                ["Healthy 35-year-old planning for sinus surgery. What investigations do you need to do?", ["ECG", "Liver function test", "Cr", "Chest X-ray", "Nothing"], 4, "Routine preoperative testing is NOT indicated for young, asymptomatic, healthy patients undergoing minor/moderate surgery."],
+                ["Tertiary prevention, What of the following conditions?", ["Acute hospital setting", "Rehab after stroke", "Giving vaccines", "Screening"], 1, "Tertiary prevention aims to soften the impact of an ongoing illness that has lasting effects (rehabilitation)."],
+                ["All are part of screening for 63 y/o lady except:", ["Occult blood", "Tumor marker", "Mammogram", "Pap smear"], 1, "Tumor markers (like CEA, CA-125) are NOT recommended for routine screening in asymptomatic individuals."],
+                ["Screening question for depression, patient is diabetic and hypertensive:", ["2 weeks ago, wanted to hurt himself", "2 weeks duration of change in appetite", "1 month of feeling down", "1 month of disturbed sleep"], 1, "The core screening symptoms for depression (SIGECAPS) must be present for at least 2 weeks."],
+                ["Percentage of people who have positive test for the disease in question:", ["Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value"], 2, "PPV is the probability that subjects with a positive screening test truly have the disease."],
+                ["Patient diagnosed with schizophrenia since 15 years, takes medication daily, this is:", ["Acute hospital setting", "Rehab after stroke", "Giving vaccines", "Tertiary prevention (assuming B from original typo)"], 3, "Chronic medication management to prevent relapse of an established disease is Tertiary prevention."],
+                ["Full medical history for 67 old woman, screening, all except:", ["DEXA", "Mammogram", "Flexible sygmoidoscopy", "PFT"], 3, "Pulmonary Function Tests (PFTs) are not used for routine screening in asymptomatic patients."],
+                ["Pneumococcal vaccine is considered:", ["Primary prevention", "Secondary prevention", "Tertiary prevention"], 0, "Vaccines prevent the onset of disease entirely, which is the definition of primary prevention."],
+                ["Which of the following is an average risk patient that will have the maximum benefit of colonoscopy?", ["51 year old female with metastatic breast CA", "77 year old patient who is medically free and never done endoscopy before", "75 year old who has done colonoscopy 7 years ago", "54 year old with class IV heart failure"], 1, "Screening yields the highest benefit in healthy, un-screened older adults with a long life expectancy."],
+                ["Which of the following is true regarding exercise?", ["Intense exercise hasn't been found to be beneficial over moderate/mild exercise.", "Must be everyday", "Counseling hasn't shown increase", "No benefit without weight loss"], 0, "Moderate exercise provides the vast majority of cardiovascular benefits; extreme intensity adds minimal extra protective benefit."],
+                ["Haya is a 60 yo female diabetic, all screening indicated according to USPSTF except:", ["Mammography every 1-2 year", "Colonoscopy", "Bone densitometry"], 2, "Bone densitometry (DEXA) routine screening begins at age 65 for women, not 60 (unless specific high risks exist)."],
+                ["Which of the following is true concerning USPSTF guidelines?", ["Screening for breast ca by mammography every 2 years after age 40", "Screening for diabetes in all obese age 30-70", "Screening for GDM after 28 wk gestation"], 0, "The 2024 USPSTF update recommends biennial (every 2 years) screening mammography for women aged 40 to 74."],
+                ["DM patient going for TKR WHAT TO DO?", ["HBA1C", "DO NOTHING", "X ray"], 0, "For a diabetic patient undergoing major surgery (Total Knee Replacement), an HbA1c is needed to assess long-term control and surgical risk."],
+                ["31 y/o married lady, Pap smear was negative, next pap smear done after:", ["3 years", "5 years"], 0, "For women aged 21-29, cytology alone every 3 years. For 30-65, cytology every 3 yrs OR co-testing (Pap+HPV) every 5 yrs. Assuming cytology alone here."],
+                ["We give aspirin to prevent CAD to:", ["Men 45-79", "Women 55-79", "None regardless of sex and age"], 2, "Current 2022 USPSTF guidelines recommend against routine initiation of low-dose aspirin for primary prevention in older adults."],
+                ["Which of the following statements is wrong?", ["Both A and B are wrong (Vitamin D for all elderly falls / No screening test for falling)"], 0, "Vitamin D is NO LONGER recommended to prevent falls, and there ARE screening tests for falls (like the 'Get Up and Go' test)."],
+                ["Tertiary Prevention:", ["Smoking cessation counselling for a patient with COPD", "Erythromycin eye drops for a neonate"], 0, "Stopping smoking in a patient who already has COPD prevents further deterioration, which is tertiary prevention."],
+                ["27 lady preparing to pregnancy (BMI= overweight, hba1c 5.6 ......):", ["Lifestyle modification before conceiving"], 0, "Preconception counseling always emphasizes lifestyle optimization (weight, diet) to prevent gestational diabetes and complications."],
+                ["Question about mammogram done 18 years ago next step:", ["Do a screening mammogram now. If normal, resume routine screening every 2 years."], 0, "An 18-year-old test is irrelevant; restart standard biennial screening immediately."],
+                ["46, did PAP 6 years ago (free) and took HPV vaccine 6 years ago. Correct screening:", ["Do pap smear and HPV test every 5 years"], 0, "Women aged 30-65 should receive co-testing (Pap + HPV) every 5 years. Vaccination status does not change screening intervals."],
+                ["Screening for AAA:", ["67 years smoker hypertensive"], 0, "USPSTF recommends a 1-time ultrasound screening for Abdominal Aortic Aneurysm in men aged 65-75 who have ever smoked."],
+                ["60, smoker for 30 years, quit three ago, did colonoscopy 6 years ago (free). Correct screening:", ["Do yearly low dose CT scan"], 0, "Adults 50-80 with a 20-pack-year history who currently smoke or quit within 15 years need annual Low-Dose CT for lung cancer."],
+                ["Patient health questioner-9 (PHQ-9) access symptoms from:", ["2 weeks"], 0, "The PHQ-9 asks about the frequency of depressive symptoms over the 'last 2 weeks'."],
+                ["Girl with abdominal pain and constipation since a weak, concerned since her father had colon cancer, management:", ["Reassure and advice lifestyle modification"], 0, "A 1-week history of constipation in a young girl is acute/functional. Colon cancer takes years; reassurance and diet are first line."]
+            ],
+            "Evidence Based Medicine (EBM)": [
+                ["In an Alzheimer's drug study, exclusion criteria include stroke, vascular dementia, and renal disease. We conclude:", ["This is selection bias", "Results should be generalizable", "Patients are so finely selected that the results cannot be applied to the general Alzheimer's disease population"], 2, "Strict exclusion criteria reduce 'external validity' (generalizability), meaning real-world patients (who often have comorbidities) may not respond the same way."],
+                ["In a diabetes drug study, exclusion criteria include renal disease, HF, CAD, and PVD. We conclude:", ["Results are generalizable", "This is selection bias", "The patients are so finely selected that the results cannot be applied to our general clinic population"], 2, "Most real-world diabetics have these cardiovascular/renal conditions, so excluding them makes the study non-generalizable to normal practice."],
+                ["2 volleyball teams studied, one given sunblock SPF35 other not given anything, then comparing effect. Study type?", ["Cohort", "Randomized controlled", "Meta-analysis", "Case-control"], 1, "Because the researcher actively assigned/intervened (giving sunblock to one group), it is a controlled trial."],
+                ["Two groups (A and B). No randomization, no interventions. Reviewing records. Group A had stroke then another stroke. Group B had stroke but alive with no recurrent stroke. You assess presence of XYZ. Type of study:", ["Prospective study", "Meta-analysis", "Case-control study", "Cohort study", "Randomized control"], 2, "Starting with the OUTCOME (recurrent stroke vs no recurrent stroke) and looking BACK for the exposure (XYZ) defines a Case-Control study."],
+                ["Which of the following regarding the USPSTF recommendations mismatched?", ["Grade A Means: recommends for all patients and all age groups."], 0, "Grade A does NOT mean 'for all patients/ages'. It means highly recommended for the *specifically targeted* risk group."],
+                ["MEDLINE search yielded 8 articles describing effects of sun on melanoma, figures merged into one big statistical study:", ["Cohort", "Randomized controlled", "Meta-analysis", "Case-control"], 2, "Pooling statistical data from multiple separate studies into one analysis is the definition of a Meta-Analysis."],
+                ["Differences between case-control & cohort designs. Correct?", ["Case-control studies are better suited for rare outcomes and are cheaper than cohort studies."], 0, "Case-control looks backwards from the disease, making it cheap, fast, and perfect for rare diseases."],
+                ["Regarding five steps model of EBM ALL ARE TRUE EXCEPT:", ["Critically appraise that evidence for its accountability"], 0, "You appraise evidence for its VALIDITY and APPLICABILITY, not 'accountability'."],
+                ["What is the best clinical research study that can determine causality between intervention and outcome?", ["Case series", "Case study", "Cross sectional", "Randomised clinical trial"], 3, "RCTs are the gold standard for proving cause-and-effect because randomization eliminates confounding variables."],
+                ["Researcher reading a certain study, which should the researcher NOT focus on?", ["Type of the study", "P value <0.01"], 1, "While P-value is noted, a researcher should focus on clinical significance, confidence intervals, and study design over just a tight P-value."],
+                ["Patient has chest, back, abdominal pain, non-specific symptoms, seen a lot of drs, no answer:", ["Don't order many tests blindly and we will follow your symptoms closely and then order investigations accordingly"], 0, "In medically unexplained symptoms, avoid the 'fishing expedition' of blind tests. Schedule regular follow-ups and observe."],
+                ["The p value that indicates the lowest probability the results were from chance:", ["P<0.01"], 0, "A smaller P-value indicates stronger evidence against the null hypothesis (i.e., less likelihood it was just random chance)."],
+                ["Not an observational study:", ["Systemic review"], 0, "A systematic review is a secondary synthesis of existing literature, not primary observational field research."],
+                ["Advantage of case control over cohort:", ["Cheaper & faster"], 0, "Because you don't have to wait years for the disease to develop (you start with patients who already have it)."],
+                ["Wrong:", ["Novelty is Common, memorable conditions"], 0, "Novelty refers to rare, unusual, or new conditions, not common ones."]
+            ],
+            "Management Plan": [
+                ["Regarding the principles of patient management ALL ARE TRUE except:", ["The doctor must fully understand the patient", "Give the patient the responsibility for the problem", "Reaching a shared understanding", "Investigation to monitor a patient's progress only", "Negotiate the management plan"], 3, "Investigations are used for diagnosis, screening, AND monitoring; they are not strictly 'only' for monitoring."],
+                ["Referral. Which is wrong?", ["Doesn't include referral to books", "Doctors have to be proficient", "Could be to another colleague", "When you know that you can't solve the problem", "Could be to senior doctor"], 0, "Referral CAN include prescribing information, directing patients to read books, websites, or educational materials."],
+                ["Which is false about low back pain?", ["If bilateral indicate for imaging", "If presented with cauda equina need urgent surgical referral", "Must be less than 6 weeks to be acute", "We use short period opioid as third line treatment", "We can use acetaminophen up to 2g instead of NSAIDs"], 4, "Acetaminophen is no longer recommended as first-line monotherapy for low back pain due to lack of efficacy compared to NSAIDs."],
+                ["Patient with recent HTN, Tx of choice:", ["B-blocker", "ACEI", "Thiazide", "Ca channel blocker", "Combination"], 1, "ACE Inhibitors (or ARBs/CCBs/Thiazides) are first-line. Beta-blockers are NOT first-line for uncomplicated HTN."],
+                ["Patient who's noncompliant with medications. Best way to know compliance is:", ["Ask about doses, timing, & names of his medications", "Do blood tests", "Ask him directly", "Count the pills"], 0, "Having the patient describe their actual daily routine (doses/timing) reveals true understanding and compliance better than a simple 'yes/no'."],
+                ["14-year-old boy with DM type 1 who's noncompliant, what should you do?", ["Reassurance", "Assess his understanding of his disease", "Get the father to be involved", "Advise him about importance"], 1, "Before intervening, you must understand WHY he is noncompliant by assessing his knowledge, fears, and ideas about the disease."],
+                ["A drug that doesn't cause bleeding:", ["NSAIDS", "Warfarin", "ASA", "OCP"], 3, "Oral Contraceptive Pills (OCPs) are pro-thrombotic (cause clotting), whereas NSAIDs, Warfarin, and Aspirin increase bleeding risk."],
+                ["Patient with pneumonia, you would admit him if:", ["WBCs above 7000", "Urea=18 mg/dl", "Diabetic with random blood sugar above 80", "He has good family support"], 1, "Based on CURB-65 criteria, elevated Blood Urea Nitrogen (BUN > 19 mg/dL or Urea > 7 mmol/L) is a severity marker requiring admission."],
+                ["24-year-old male with acute low back pain, what to do?", ["Resume exercise as tolerated", "Back muscles strengthening"], 0, "For acute mechanical back pain, maintaining normal activity and returning to movement as tolerated is superior to bed rest."],
+                ["Woman 54 with microcytic anemia:", ["Refer to hematologist", "Observe 3 months", "Give ferrous sulphate", "Upper and lower endoscopy"], 3, "Microcytic anemia in a post-menopausal woman is GI bleeding until proven otherwise; requires immediate scopes to rule out colon/gastric cancer."],
+                ["A drug that doesn't cause bleeding:", ["OCP"], 0, "As stated before, OCPs increase clotting risk (DVT/PE), not bleeding risk."],
+                ["Lady with waist circumference 103cm, bp 135/90, FBS 120, HDL 25, cholesterol 170, most appropriate management?", ["Serious lifestyle changes", "Start on antihypertensive drugs", "Give thyroxine"], 0, "She meets criteria for Metabolic Syndrome. The first-line intervention is aggressive lifestyle/dietary modification."],
+                ["Not part of management in the 40-year-old female with a painless breast mass?", ["Physical examination can differentiate between benign & malignant masses"], 0, "Physical exam CANNOT definitively differentiate benign from malignant; imaging and biopsy are always required."],
+                ["All the followings influence the outcome of the management plan except:", ["The patient's attitude towards the doctor"], 0, "While attitude matters, the patient's objective compliance, understanding, and disease severity dictate the hard clinical outcome more (though this is debated, 'A' was the given answer)."],
+                ["The most imp factor to make the pt more compliant with drugs:", ["Knowing about the disease"], 0, "Health literacy and understanding WHY a drug is needed is the strongest predictor of medication adherence."],
+                ["The most important for patient to take drugs correctly:", ["Patient understanding of the illness"], 0, "If they don't understand the illness, they won't value the treatment."],
+                ["Kid with type 1 DM not adherent:", ["Tell him about his illness..."], 0, "Education and addressing their specific developmental understanding of the disease is the first step in pediatric non-adherence."],
+                ["25-year-old hyperlipidemic, overweight, started statin, came back with increased weight, stopped statin. What to do?", ["Understand her ideas, concerns and expectations and share in understanding the management"], 0, "Explore her ICE (Ideas, Concerns, Expectations) to see why she connected the weight gain to the statin before forcing treatment."],
+                ["Wrong - management plan:", ["Made by the doctor alone because he knows more about condition of his pt"], 0, "Modern medicine requires shared decision-making; paternalistic 'doctor knows best' sole planning leads to poor compliance."],
+                ["After carpel tunnel surgery:", ["NSAIDS"], 0, "NSAIDs are standard post-operative analgesia to manage pain and local inflammation."]
+            ],
+            "Diagnostic Process + Pt. Centered Medicine": [
+                ["FALSE regarding patient centered medicine?", ["Accentuates doctor patient relationship", "Care of family life cycle", "Includes patient beliefs", "Activates patient involvement", "Does not affect the compliance of the patients"], 4, "Patient-centered medicine greatly INCREASES patient compliance because they are involved in the decision-making process."],
+                ["Patient-centered clinicians use the following behavior(s):", ["Calm listening with an absence of distracting movements", "Frequent interruptions", "Lean back with arms crossed", "Avoid repeatedly asking for feedback", "Avoid eye contact"], 0, "Active, calm listening without fidgeting demonstrates full attention and respect."],
+                ["Wrong about medicine in the past:", ["Patients could express feelings and expectations"], 0, "Past medicine was paternalistic and disease-focused; patients were rarely asked about their feelings or expectations."],
+                ["New medicine compared to past, false:", ["Doctor only puts management plan"], 0, "In modern patient-centered medicine, the management plan is negotiated and shared with the patient."],
+                ["FALSE regarding patient centered medicine?", ["Does not affect the compliance of the patients"], 0, "As stated before, it significantly improves compliance."],
+                ["Regarding hypotheticodeductive method, TRUE:", ["Using time as diagnostic tool does not always avoid unnecessary painful and costly investigations"], 0, "While 'tincture of time' helps clarify diagnoses, it is not foolproof and sometimes invasive tests are still necessary."],
+                ["Regarding hypotheticodeductive method, TRUE:", ["Deductive is more time consuming & not everyone does it"], 0, "Generating hypotheses and testing them is the rapid mental model experts use; exhaustive deductive reasoning takes too long."],
+                ["65M neck pain, no injury, worse after activities, dull ache interscapular, limited ROM, tenderness, radiation to arm, no neuro signs. True:", ["The patient most likely has cervical intervertebral disc, mechanical pain, tension headache, metastasis", "The patient most likely has mechanical pain, osteoarthritis, whiplash, and metastasis"], 1, "The presentation is classic for mechanical degenerative wear-and-tear (osteoarthritis) without acute disc neurological impingement."],
+                ["30-year-old, nurse, newly married, ill father, complaining of tiredness for past month, wrong?", ["Ask about symptoms of hyperthyroid"], 0, "Hyperthyroidism usually causes hyper-arousal, weight loss, and tachycardia, not primarily isolated fatigue in the context of major life stressors (anxiety/depression are more likely)."],
+                ["32-year-old teacher, mother of 5, tiredness for 4 months. Correct except:", ["If she gave a history of weight loss, diagnostic probabilities are: pulmonary TB, anemia, thyrotoxicosis and malignancy"], 0, "Anemia does NOT typically cause weight loss. The others do."],
+                ["Wrong about a breast mass:", ["Cystic / solid masses can be differentiated by exam"], 0, "Palpation cannot reliably distinguish a fluid-filled cyst from a solid tumor; ultrasound is required."],
+                ["Feature of metabolic syndrome?", ["Hypertriglyceridemia"], 0, "High Triglycerides (>150 mg/dL) are a core diagnostic criterion for Metabolic Syndrome."],
+                ["Old lady with chronic back pain, taken NSAIDs without improvement, declined physio, asked for stronger analgesics. What to do?", ["Ask her why she refused physiotherapy"], 0, "Always explore the patient's reasoning and barriers before rejecting their request or forcing a treatment."],
+                ["Red flag in headache:", ["New onset after age 45", "Immunocompromised patient", "Neck pain", "Worst at end of day", "Eye itching"], 1, "Being immunocompromised (HIV, cancer) makes the patient highly susceptible to opportunistic brain infections/abscesses."],
+                ["Metabolic syndrome, right?", ["Women waist > 88 cm"], 0, "A waist circumference of > 88 cm (35 inches) in women is a defining risk factor for metabolic syndrome."],
+                ["Test isn't needed for early onset hypertension?", ["Serum catecholamines"], 0, "Routine catecholamine screening for pheochromocytoma is not indicated unless specific symptoms (paroxysms, sweating) exist."],
+                ["Multiple masses in posterior triangle of neck & B symptoms, order of DDx:", ["Lymphoma - TB - gastric cancer"], 0, "B symptoms (fever, night sweats, weight loss) with neck masses strongly point to Lymphoma first, then chronic infection like TB."],
+                ["Pt centered medicine except:", ["Environment"], 0, "While environment matters, the core tenets of the patient's inner world are ICE (Ideas, Concerns, Expectations)."],
+                ["Principles of diagnosis, except:", ["Certainty"], 0, "Diagnosis in primary care is based on probability and managing uncertainty, rarely 100% certainty."],
+                ["30M businessman, chest pain radiating to neck/arm while driving, numbness. Diagnosis order:", ["Anxiety - MI - Musclo"], 0, "While MI is most dangerous, in a healthy 30yo, panic attack/anxiety is vastly more PROBABLE, making it Anxiety > MI > MSK."],
+                ["50F, 1 year headache, widowed a year ago with 7 children... wrong:", ["If you are sure it is tension you give her antidepressants and advise relaxation"], 0, "First-line for tension headache is simple analgesia (NSAIDs) and CBT/relaxation, NOT immediate antidepressants."],
+                ["12 y/o boy headache for 3 days, father died 1 month ago, DDx:", ["URTI, teeth pain, eye problem, but meningitis and brain tumor are far"], 0, "Common things are common. Acute viral illnesses or somatic manifestations of grief are far more likely than tumors."],
+                ["Teenager with acute abdomen (appendicitis). Best for diagnosis?", ["History & physical exam"], 0, "Appendicitis is primarily a clinical diagnosis based on classic history (periumbilical migrating pain) and exam (RLQ tenderness)."],
+                ["Wrong about female 60y/o with vertigo?", ["Most common cause is transit ischemia"], 0, "The most common cause of vertigo by far is BPPV (Benign Paroxysmal Positional Vertigo), not TIA."],
+                ["Idiosyncrasy:", ["Genetic and Dose independent"], 0, "An idiosyncratic drug reaction is unpredictable, not dose-dependent, and often genetically mediated."],
+                ["A hypothyroid patient has all of the following except:", ["Pretibial myxedema"], 0, "Pretibial myxedema is specifically a sign of Graves' disease (Hyperthyroidism), not hypothyroidism."],
+                ["Dx of nasopharynx angiofibroma by:", ["CT"], 0, "CT scan is the gold standard for defining the bony destruction and extent of an angiofibroma."],
+                ["Young lady to ER with palpitations, dizziness, fear of dying. Relevant question?", ["Ask if she ever had a similar episode before"], 0, "Recurrent discrete episodes of overwhelming fear strongly point to Panic Disorder."],
+                ["Patient hard to get info from, how to make him give true info?", ["Open ended questions (Or engage in tx plan)"], 0, "According to Dr. Rana, Open-ended questions allow the patient space to eventually reveal the truth."],
+                ["Patient holding hand in adduction with internal rotation. Best imaging?", ["Lateral axillary X-Ray"], 0, "This posture suggests a posterior shoulder dislocation, which requires an Axillary Y or axillary lateral view to diagnose."],
+                ["H... diagram:", ["All of the above (What happened, Why me, Why now)"], 0, "Patients' illness narratives usually revolve around making sense of the timing and causality of their disease."],
+                ["Wrong:", ["Anxiety increases pain tolerance"], 0, "Anxiety actually DECREASES pain tolerance, making patients feel pain more acutely."],
+                ["Wrong about Vertigo:", ["Meniere's disease is the most common"], 0, "BPPV is the most common. Meniere's is relatively rare."],
+                ["About differential diagnosis one wrong statement:", ["40-year-old male with 3 weeks cough (chronic bronchitis, bronchiolitis, whooping, pneumonia)"], 0, "Bronchiolitis and whooping cough are primarily pediatric diagnoses, very unlikely in a 40-year-old."],
+                ["Man recently divorced exercises, came worried having neck pain. Dx:", ["1- MS pain 2- anxiety 3- MI"], 0, "Exercise-induced neck pain in a stressed patient is most likely musculoskeletal, then anxiety, with MI being dangerous but less likely."],
+                ["Patient 7 children presents with tension headache, false:", ["Since you expect tension headache you shouldn't ask about symptoms of migraine"], 0, "You must ALWAYS ask distinguishing features (photophobia, nausea) to rule out migraine, even if tension is suspected."],
+                ["Patient with HBsAg -ve, HBsAb +ve, what does he have?", ["He is immune"], 0, "Negative surface antigen with positive surface antibody indicates immunity (either from vaccination or resolved past infection)."],
+                ["52 yo male 1/3 positive hemoccult, hemorrhoids stable, 2nd hemoccult negative. Next step?", ["Flexible sigmoidoscopy (or Colonoscopy)"], 0, "ANY positive occult blood test in a 52-year-old warrants endoscopic evaluation to rule out malignancy, regardless of negative repeats."],
+                ["Wrong about calcium pyrophosphate deposition disease:", ["Classically affects 4th and 5th MCP joints"], 0, "CPPD (Pseudogout) classically affects the Knee and Wrist, while Hemochromatosis classically affects the 2nd/3rd MCPs."],
+                ["All true about acute bronchiolitis except:", ["Diagnosed by chest x ray"], 0, "Bronchiolitis is a CLINICAL diagnosis (infant with wheezing/coryza); routine X-rays are not indicated."],
+                ["Osteoporosis associated with:", ["Hypogonadism"], 0, "Lack of sex hormones (estrogen in women, testosterone in men) directly leads to rapid bone density loss."],
+                ["Most common cause of sudden death in young athletes after trauma?", ["Hypertrophic cardiomyopathy"], 0, "HCM is the leading cause of sudden cardiac death in young athletes, often triggered by exertion or stress."],
+                ["40M fever, low back pain, peritoneal discomfort. True?", ["If physical exam is normal, acute bacterial prostatitis is less probable"], 0, "Acute prostatitis typically presents with an exquisitely tender, swollen prostate on DRE."],
+                ["69M upper abdominal discomfort, nausea, weight loss 2 mos, early satiety. Rank diagnosis:", ["Gastric cancer, pancreatic pathology, diverticulosis"], 0, "Early satiety and weight loss in an elderly patient are massive red flags for upper GI malignancies (Gastric/Pancreatic)."],
+                ["Patient with peripheral vascular disease, best confirmatory test?", ["Digital subtraction angiography"], 0, "While ABPI is the screening test, Angiography remains the gold standard confirmatory test for vascular mapping."],
+                ["Test related to rotator cuff tear:", ["Drop arm test"], 0, "The Drop Arm test specifically assesses the integrity of the supraspinatus muscle/tendon."],
+                ["Wrong about vertigo:", ["BPV lasts from minutes to hours"], 0, "BPPV classically lasts only SECONDS (usually < 1 minute) and is triggered by head movement."],
+                ["Old patient with abdominal pain 1 month, anorexia, weight loss. DDx:", ["Anxiety, volvulus, malignancy (Assuming option A from text)"], 0, "Malignancy must be at the top of the list for new anorexia and weight loss in the elderly."],
+                ["Not error during dx:", ["Medical students including all diff based on probability and seriousness"], 0, "Generating a broad differential based on probability and red flags is correct methodology, not an error."],
+                ["None is right except:", ["Diagnosis is a state of probability rather than certainty"], 0, "Medicine is probabilistic. We treat based on highest likelihoods and ruling out the most dangerous."],
+                ["Wrong about hypodeductive method:", ["Take comprehensive history from every patient"], 0, "Hypothetico-deductive focuses on FOCUSED history driven by hypotheses, not a blind, exhaustive comprehensive history for everyone."],
+                ["Woman with back pain, wrong question:", ["You think your pain increases by movement?"], 0, "This is a leading question. You should ask 'What makes the pain better or worse?'"],
+                ["40F lost husband 6 mos ago came with fatigue, headache. Correct:", ["Depression\\anxiety -> anemia -> thyrotoxicosis -> malignancy -> TB"], 0, "Psychological reaction to severe grief (depression) is highly probable, followed by common organic causes like anemia."],
+                ["Woman with knee pain since a month, increased with movement, no tenderness:", ["Most likely differential is osteoarthritis, patella femoral syndrome.."], 0, "Chronic, movement-related knee pain without acute inflammatory signs points to mechanical wear (OA/PFS)."],
+                ["70M diarrhea 3 months, no blood/mucus, vomiting. Wrong about interpretation:", ["Malignancy is the most common cause"], 0, "While malignancy must be ruled out, functional bowel disorders or chronic infections/malabsorption are statistically more common."],
+                ["Which of the following statements is wrong?", ["Anterior anal fissures are the most serious & are related to IBD"], 0, "LATERAL fissures are the ones highly suspicious for secondary causes like Crohn's/IBD; anterior/posterior are usually benign."],
+                ["Stable angina:", [">85% the cause is cardiovascular"], 0, "True stable angina is by definition caused by atherosclerotic coronary artery disease."],
+                ["Wrong:", ["CT for most cases of headache"], 0, "Imaging is NOT indicated for the vast majority of primary headaches (tension, migraine) unless red flags are present."],
+                ["Medical student with anxiety, anemia, and thyroid-related symptoms most likely explanation:", ["Anxiety"], 0, "Medical students frequently experience 'Medical Student Syndrome' (health anxiety) due to high stress and studying diseases."],
+                ["Wrong about asthma:", ["Less common in people with history of eczema or atopy"], 0, "Asthma is highly ASSOCIATED with the atopic triad (Asthma, Eczema, Allergic Rhinitis)."],
+                ["Friend asked for antidepressants without documentation. Best response:", ["Explain that it is not appropriate for a friend to prescribe or give antidepressants"], 0, "Prescribing psychotropics to friends/family violates professional boundaries and medical ethics."],
+                ["Bulimia nervosa is NOT characteristic of which of the following?", ["Metabolic acidosis"], 0, "Purging (vomiting) results in loss of stomach acid (HCl), causing Metabolic ALKALOSIS, not acidosis."],
+                ["Patient googled temporal arteritis - what not to do?", ["Tell him not to search google for symptoms."], 0, "Don't chastise patients for researching. Acknowledge their effort, validate their concern, and medically evaluate the red flag."]
+            ],
+            "Counseling": [
+                ["Counselling is best described as:", ["Giving advice", "Help patient explore his own situation", "Giving directions to the patient"], 1, "Counseling is facilitative; it helps patients understand themselves to find their own solutions."],
+                ["Patient with insomnia and anxiety, best first step for GP:", ["CBT and life modifications"], 0, "Non-pharmacological therapy (Cognitive Behavioral Therapy and sleep hygiene) is first-line for insomnia/mild anxiety."],
+                ["Counselling is best described as:", ["Empathy and compassion", "Helping patients help them selves by increasing their self awareness"], 1, "The core goal of counseling is fostering self-awareness and autonomy."],
+                ["Not benefit of going to GP:", ["Excellent at working alone"], 0, "GPs work in multidisciplinary teams; isolation/working alone is not a benefit."],
+                ["Wrong in counselling:", ["Apologizing to patient about not being able to diagnose quickly is evidence of liability"], 0, "Apologizing for a delay or uncertainty shows empathy and builds trust; it does not constitute legal liability."],
+                ["Not in counselling:", ["Negotiation to change patient values"], 0, "Counseling respects the patient's core values; you don't negotiate to forcefully change who they are."],
+                ["All the following are aims of the interview except:", ["Ask closed ended questions"], 0, "Interviews aim to explore broadly using open-ended questions, relying on closed questions only for specific details."]
+            ],
+            "Doctor-Patient Relationship": [
+                ["Patient insists on being examined by one doctor because the doctor reminds him of his father. This is:", ["Informed consent", "Counter transference", "Transference", "Confidentiality", "Resistance"], 2, "Transference occurs when a patient unconsciously redirects feelings about a past figure (father) onto the physician."],
+                ["After you listen to her worries your approach will be:", ["Ask more about her worries, feeling, ideas and concerns then share with her the options of the management"], 0, "Exploring ICE (Ideas, Concerns, Expectations) followed by shared decision-making is the gold standard approach."],
+                ["What does the patient needs from Patient-Dr relationship?", ["Listening", "Competence", "Sympathy vs empathy", "Telling truth", "All the above"], 4, "Patients require a holistic combination of clinical competence, active listening, empathy, and honesty."],
+                ["What do patients need the most from doctors?", ["Listening"], 0, "While competence is expected, studies consistently show patients value a doctor who truly 'listens' above all interpersonal traits."],
+                ["Dr-Pt. relationship should be:", ["Human relationship", "Show empathy", "Warm nonverbal communication", "All of the above"], 3, "A therapeutic relationship relies on humanity, empathy, and positive non-verbal cues."],
+                ["Doctor told next patient is drug abuser, got angry and shouted all abusers never want to get better. This is:", ["Transference", "Counter transference", "Projection"], 1, "Counter-transference is the physician's emotional reaction and bias projected onto the patient."],
+                ["Pediatrician friend asks about your patient (her neighbor) who was diagnosed with HIV. What do you tell?", ["It is inappropriate to discuss pt information with you"], 0, "Confidentiality is absolute. You cannot disclose medical info to a colleague just because they are friends or neighbors."],
+                ["A question about a case of transference asking about the wrong action:", ["Confront the patient about his feelings"], 0, "Aggressively confronting unconscious transference breaks rapport; it should be managed gently with boundaries."],
+                ["Patients usually seek which of the following in any patient-doctor relationship:", ["Addressing their expectations"], 0, "Addressing a patient's specific expectations is crucial for satisfaction and adherence."],
+                ["Pt-dr communication wrong?", ["Always keep eye contact with pt"], 0, "Staring continuously can be intimidating or culturally inappropriate; eye contact should be natural and broken occasionally."],
+                ["Woman with crampy abdominal pain, increase with stress and relieved with defecation?", ["Therapeutic doctor patient relationship"], 0, "This is classic Irritable Bowel Syndrome (IBS). A strong therapeutic relationship is the cornerstone of managing functional disorders."],
+                ["Dependance?", ["Is a consequence of dr/pt long-term relationship"], 0, "Over time, patients may become overly reliant on a specific GP for all decisions, leading to medical dependence."],
+                ["Good doctor pt relation, what's not benefit for the dr?", ["More follow up visits"], 0, "While compliance improves, unnecessary frequent follow-ups take up clinical time and represent dependency, not a benefit."],
+                ["Wrong about dr-pt relationship?", ["Patients have the same attitude"], 0, "Every patient has a unique background, personality, and attitude requiring a tailored approach."],
+                ["A friend wanted antidepressants without documentation:", ["I know it's hard on you but I dont think its best for a friend to do that"], 0, "Politely but firmly refusing to prescribe outside of a formal, documented physician-patient relationship is legally and ethically required."]
+            ]
+        };
+
+        // State Management
+        let state = {
+            view: 'home',
+            currentTopic: null,
+            questions: [],
+            currentIndex: 0,
+            answers: {}, 
+            wrongQuestions: new Set()
+        };
+
+        const appEl = document.getElementById('app');
+
+        // Initialize App
+        function render() {
+            if (state.view === 'home') {
+                appEl.innerHTML = renderHome();
+            } else if (state.view === 'quiz') {
+                appEl.innerHTML = renderQuiz();
+            }
+        }
+
+        function renderHome() {
+            let topicsHtml = '';
+            for (const [topic, qList] of Object.entries(quizData)) {
+                topicsHtml += `
+                    <button onclick="startQuiz('${topic}')" class="bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-md transition-all rounded-2xl p-5 text-left group">
+                        <h3 class="font-bold text-slate-800 text-lg group-hover:text-indigo-600 transition-colors">${topic}</h3>
+                        <p class="text-slate-500 text-sm mt-1">${qList.length} Questions</p>
+                    </button>
+                `;
+            }
+
+            return `
+                <div class="fade-in">
+                    <div class="mb-8 text-center">
+                        <h2 class="text-3xl font-extrabold text-slate-800 mb-3">Select a Topic</h2>
+                        <p class="text-slate-500">Test your knowledge for the Family Medicine final.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                        ${topicsHtml}
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="startQuiz('All')" class="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium shadow-sm transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                            All Questions (Random)
+                        </button>
+                        <button onclick="startQuiz('Review')" class="flex items-center justify-center gap-2 bg-rose-100 hover:bg-rose-200 text-rose-700 px-6 py-3 rounded-xl font-medium shadow-sm transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Review Incorrect (${state.wrongQuestions.size})
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderQuiz() {
+            if (state.questions.length === 0) {
+                return `
+                    <div class="text-center py-20 fade-in">
+                        <div class="inline-block bg-emerald-100 text-emerald-600 p-4 rounded-full mb-4">
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">Great job!</h2>
+                        <p class="text-slate-500 mb-6">You have no questions to review in this category.</p>
+                        <button onclick="goHome()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">Return Home</button>
+                    </div>
+                `;
+            }
+
+            const qData = state.questions[state.currentIndex];
+            const qText = qData[0];
+            const options = qData[1];
+            const correctIdx = qData[2];
+            const expText = qData[3];
+            
+            const answeredState = state.answers[state.currentIndex];
+            const isAnswered = !!answeredState;
+
+            let optionsHtml = '';
+            options.forEach((opt, idx) => {
+                const letter = String.fromCharCode(65 + idx);
+                let btnClasses = "w-full text-left p-4 rounded-xl border-2 transition-all duration-200 mb-3 font-medium ";
+                let icon = "";
+
+                if (!isAnswered) {
+                    btnClasses += "border-slate-200 bg-white hover:border-indigo-300 hover:bg-indigo-50 text-slate-700 cursor-pointer";
+                } else {
+                    btnClasses += "cursor-default ";
+                    if (idx === correctIdx) {
+                        btnClasses += "border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm";
+                        icon = `<svg class="w-5 h-5 text-emerald-600 inline float-right" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                    } else if (idx === answeredState.selected) {
+                        btnClasses += "border-rose-500 bg-rose-50 text-rose-800 shadow-sm";
+                        icon = `<svg class="w-5 h-5 text-rose-600 inline float-right" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                    } else {
+                        btnClasses += "border-slate-100 bg-slate-50 text-slate-400 opacity-60";
+                    }
+                }
+
+                optionsHtml += `
+                    <button class="${btnClasses}" ${!isAnswered ? `onclick="selectOption(${idx})"` : 'disabled'}>
+                        <span class="font-bold mr-2 opacity-60">${letter}.</span> ${opt} ${icon}
+                    </button>
+                `;
+            });
+
+            return `
+                <div class="fade-in max-w-3xl mx-auto">
+                    <!-- Progress Bar -->
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-bold text-indigo-600 uppercase tracking-wider">${state.currentTopic === 'All' ? 'Random Mix' : state.currentTopic === 'Review' ? 'Reviewing Incorrect' : state.currentTopic}</span>
+                        <span class="text-sm font-medium text-slate-500 bg-slate-200 px-3 py-1 rounded-full">Question ${state.currentIndex + 1} of ${state.questions.length}</span>
+                    </div>
+                    
+                    <div class="w-full bg-slate-200 rounded-full h-1.5 mb-8">
+                        <div class="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style="width: ${((state.currentIndex + 1) / state.questions.length) * 100}%"></div>
+                    </div>
+
+                    <!-- Question Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-800 mb-8 leading-snug">${qText}</h2>
+                        <div class="space-y-1">
+                            ${optionsHtml}
+                        </div>
+
+                        ${isAnswered ? `
+                            <div class="mt-6 p-4 rounded-xl bg-blue-50 border border-blue-100 text-blue-900 text-sm leading-relaxed flex gap-3 fade-in">
+                                <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <div><span class="font-bold block mb-1">Explanation:</span>${expText}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flex justify-between items-center pb-8">
+                        <button onclick="prevQuestion()" class="${state.currentIndex === 0 ? 'opacity-0 pointer-events-none' : ''} flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-medium transition-colors px-4 py-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            Previous
+                        </button>
+                        
+                        <button onclick="nextQuestion()" class="${state.currentIndex === state.questions.length - 1 ? 'opacity-0 pointer-events-none' : ''} flex items-center gap-2 bg-slate-800 hover:bg-black text-white px-6 py-2.5 rounded-xl font-medium transition-colors shadow-sm">
+                            Next
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Actions
+        function startQuiz(topic) {
+            state.currentTopic = topic;
+            state.currentIndex = 0;
+            state.answers = {};
+            
+            if (topic === 'All') {
+                const allQs = Object.values(quizData).flat();
+                state.questions = allQs.sort(() => Math.random() - 0.5); // Shuffle
+            } else if (topic === 'Review') {
+                state.questions = Array.from(state.wrongQuestions);
+            } else {
+                state.questions = [...quizData[topic]];
+            }
+            
+            state.view = 'quiz';
+            window.scrollTo(0, 0);
+            render();
+        }
+
+        function goHome() {
+            state.view = 'home';
+            state.currentTopic = null;
+            render();
+        }
+
+        function selectOption(idx) {
+            if (state.answers[state.currentIndex]) return;
+            
+            const qData = state.questions[state.currentIndex];
+            const correctIdx = qData[2];
+            const isCorrect = (idx === correctIdx);
+
+            state.answers[state.currentIndex] = {
+                selected: idx,
+                isCorrect: isCorrect
+            };
+
+            if (!isCorrect) {
+                state.wrongQuestions.add(qData);
+            } else if (state.currentTopic === 'Review') {
+                // If they got it right in review mode, remove it from the wrong list
+                state.wrongQuestions.delete(qData);
+            }
+
+            render();
+        }
+
+        function nextQuestion() {
+            if (state.currentIndex < state.questions.length - 1) {
+                state.currentIndex++;
+                window.scrollTo(0, 0);
+                render();
+            }
+        }
+
+        function prevQuestion() {
+            if (state.currentIndex > 0) {
+                state.currentIndex--;
+                window.scrollTo(0, 0);
+                render();
+            }
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
